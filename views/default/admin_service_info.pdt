@@ -13,15 +13,15 @@
             <td><?php $this->Html->_($module_row->meta->host_name); ?></td>
             <td>
                 <?php
-                    $this->Form->create($this->Html->safe('https://' . $this->Html->ifSet($module_row->meta->host_name) . ':8080/login/'), ['target' => '_blank']);
-                    $this->Form->fieldHidden('username', $this->Html->ifSet($service_fields->ispconfig_username));
-                    $this->Form->fieldHidden('password', $this->Html->ifSet($service_fields->ispconfig_password));
-                    $this->Form->fieldHidden('s_mod', 'login');
-                    $this->Form->fieldHidden('s_pg', 'index');
+                $this->Form->create($this->Html->safe('https://' . $this->Html->ifSet($module_row->meta->host_name) . ':8080/login/'), ['target' => '_blank']);
+                $this->Form->fieldHidden('username', $this->Html->ifSet($service_fields->ispconfig_username));
+                $this->Form->fieldHidden('password', $this->Html->ifSet($service_fields->ispconfig_password));
+                $this->Form->fieldHidden('s_mod', 'login');
+                $this->Form->fieldHidden('s_pg', 'index');
                 ?>
                 <a id="ispconfig_login<?php $this->Html->_($service->id); ?>" href="#"><?php $this->_('Ispconfig.service_info.option_login'); ?></a>
                 <?php
-                    $this->Form->end();
+                $this->Form->end();
                 ?>
             </td>
         </tr>

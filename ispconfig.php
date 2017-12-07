@@ -4,7 +4,7 @@
  *
  * @package blesta
  * @subpackage blesta.components.modules.ispconfig
- * @copyright Copyright (c) 2010, Phillips Data, Inc.
+ * @copyright Copyright (c) 2017, Phillips Data, Inc.
  * @license http://www.blesta.com/license/ The Blesta License Agreement
  * @link http://www.blesta.com/ Blesta
  */
@@ -13,11 +13,11 @@ class Ispconfig extends Module
     /**
      * @var string The version of this module
      */
-    private static $version = '1.0.0';
+    private static $version = '1.1.0';
     /**
      * @var string The authors of this module
      */
-    private static $authors = [['name'=>'Phillips Data, Inc.', 'url'=>'http://www.blesta.com']];
+    private static $authors = [['name' => 'Phillips Data, Inc.', 'url' => 'http://www.blesta.com']];
 
     /**
      * Initializes the module.
@@ -133,12 +133,12 @@ class Ispconfig extends Module
     }
 
     /**
-     * Returns an array of available service deligation order methods. The module
+     * Returns an array of available service delegation order methods. The module
      * will determine how each method is defined. For example, the method "first"
      * may be implemented such that it returns the module row with the least number
      * of services assigned to it.
      *
-     * @return array An array of order methods in key/value paris where the key is
+     * @return array An array of order methods in key/value pairs where the key is
      *  the type to be stored for the group and value is the name for that option
      * @see Module::selectModuleRow()
      */
@@ -163,6 +163,27 @@ class Ispconfig extends Module
         Loader::loadHelpers($this, ['Html']);
 
         $fields = new ModuleFields();
+        $fields->setHtml("
+			<script type=\"text/javascript\">
+				$(document).ready(function() {
+					// Set whether to show or hide the php and ssh options
+					if ($('#ispconfig_package').val() !== '0') {
+                            $('.ispconfig_option').hide();
+                            $('.ispconfig_option_label').hide();
+                    }
+
+					$('#ispconfig_package').change(function() {
+						if ($(this).val() === '0') {
+                            $('.ispconfig_option').show();
+                            $('.ispconfig_option_label').show();
+						} else {
+                            $('.ispconfig_option').hide();
+                            $('.ispconfig_option_label').hide();
+                        }
+					});
+				});
+			</script>
+		");
 
         // Fetch all packages available for the given server or server group
         $module_row = null;
@@ -199,17 +220,32 @@ class Ispconfig extends Module
         // Set the ISPConfig package as a selectable option
         $package = $fields->label(Language::_('Ispconfig.package_fields.package', true), 'ispconfig_package');
         $package->attach(
-            $fields->fieldSelect('meta[package]', $packages, $this->Html->ifSet($vars->meta['package']), ['id' => 'ispconfig_package'])
+            $fields->fieldSelect(
+                'meta[package]',
+                $packages,
+                $this->Html->ifSet($vars->meta['package']),
+                ['id' => 'ispconfig_package']
+            )
         );
         $fields->setField($package);
 
         // Set the PHP options as a multiple selectable option
         if (!empty($php_options)) {
-            $php = $fields->label(Language::_('Ispconfig.package_fields.php_options', true), 'ispconfig_php_options');
+            $php = $fields->label(
+                Language::_('Ispconfig.package_fields.php_options', true),
+                'ispconfig_php_options',
+                ['class' => 'ispconfig_option_label']
+            );
 
             foreach ($php_options as $key => $value) {
                 $php->attach(
-                    $fields->fieldCheckbox('meta[php_options][' . $key . ']', $key, $this->Html->ifSet($vars->meta['php_options'][$key]), null, $fields->label($value))
+                    $fields->fieldCheckbox(
+                        'meta[php_options][' . $key . ']',
+                        $key,
+                        $this->Html->ifSet($vars->meta['php_options'][$key]),
+                        ['class' => 'ispconfig_option'],
+                        $fields->label($value, 'meta[php_options][' . $key . ']', ['class' => 'ispconfig_option_label'])
+                    )
                 );
             }
 
@@ -218,11 +254,21 @@ class Ispconfig extends Module
 
         // Set the SSH options as a multiple selectable option
         if (!empty($ssh_options)) {
-            $ssh = $fields->label(Language::_('Ispconfig.package_fields.ssh_options', true), 'ispconfig_ssh_options');
+            $ssh = $fields->label(
+                Language::_('Ispconfig.package_fields.ssh_options', true),
+                'ispconfig_ssh_options',
+                ['class' => 'ispconfig_option_label']
+            );
 
             foreach ($ssh_options as $key => $value) {
                 $ssh->attach(
-                    $fields->fieldCheckbox('meta[ssh_options][' . $key . ']', $key, $this->Html->ifSet($vars->meta['ssh_options'][$key]), null, $fields->label($value))
+                    $fields->fieldCheckbox(
+                        'meta[ssh_options][' . $key . ']',
+                        $key,
+                        $this->Html->ifSet($vars->meta['ssh_options'][$key]),
+                        ['class' => 'ispconfig_option'],
+                        $fields->label($value, 'meta[ssh_options][' . $key . ']', ['class' => 'ispconfig_option_label'])
+                    )
                 );
             }
 
@@ -442,9 +488,9 @@ class Ispconfig extends Module
             foreach ($vars as $key => $value) {
                 if (in_array($key, $meta_fields)) {
                     $meta[] = [
-                        'key'=>$key,
-                        'value'=>$value,
-                        'encrypted'=>in_array($key, $encrypted_fields) ? 1 : 0
+                        'key' => $key,
+                        'value' => $value,
+                        'encrypted' => in_array($key, $encrypted_fields) ? 1 : 0
                     ];
                 }
             }
@@ -485,9 +531,9 @@ class Ispconfig extends Module
             foreach ($vars as $key => $value) {
                 if (in_array($key, $meta_fields)) {
                     $meta[] = [
-                        'key'=>$key,
-                        'value'=>$value,
-                        'encrypted'=>in_array($key, $encrypted_fields) ? 1 : 0
+                        'key' => $key,
+                        'value' => $value,
+                        'encrypted' => in_array($key, $encrypted_fields) ? 1 : 0
                     ];
                 }
             }
@@ -548,7 +594,7 @@ class Ispconfig extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param $vars stdClass A stdClass object representing a set of post fields
-     * @return ModuleFields A ModuleFields object, containg the fields to render
+     * @return ModuleFields A ModuleFields object, containing the fields to render
      *  as well as any additional HTML markup to include
      */
     public function getAdminAddFields($package, $vars = null)
@@ -561,7 +607,11 @@ class Ispconfig extends Module
         $domain = $fields->label(Language::_('Ispconfig.service_field.domain', true), 'ispconfig_domain');
         // Create domain field and attach to domain label
         $domain->attach(
-            $fields->fieldText('ispconfig_domain', $this->Html->ifSet($vars->ispconfig_domain), ['id'=>'ispconfig_domain'])
+            $fields->fieldText(
+                'ispconfig_domain',
+                $this->Html->ifSet($vars->ispconfig_domain),
+                ['id' => 'ispconfig_domain']
+            )
         );
         // Set the label as a field
         $fields->setField($domain);
@@ -570,7 +620,11 @@ class Ispconfig extends Module
         $username = $fields->label(Language::_('Ispconfig.service_field.username', true), 'ispconfig_username');
         // Create username field and attach to username label
         $username->attach(
-            $fields->fieldText('ispconfig_username', $this->Html->ifSet($vars->ispconfig_username), ['id'=>'ispconfig_username'])
+            $fields->fieldText(
+                'ispconfig_username',
+                $this->Html->ifSet($vars->ispconfig_username),
+                ['id' => 'ispconfig_username']
+            )
         );
         // Add tooltip
         $tooltip = $fields->tooltip(Language::_('Ispconfig.service_field.tooltip.username', true));
@@ -601,7 +655,7 @@ class Ispconfig extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param $vars stdClass A stdClass object representing a set of post fields
-     * @return ModuleFields A ModuleFields object, containg the fields to render as well
+     * @return ModuleFields A ModuleFields object, containing the fields to render as well
      *  as any additional HTML markup to include
      */
     public function getClientAddFields($package, $vars = null)
@@ -631,7 +685,7 @@ class Ispconfig extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param $vars stdClass A stdClass object representing a set of post fields
-     * @return ModuleFields A ModuleFields object, containg the fields to render as
+     * @return ModuleFields A ModuleFields object, containing the fields to render as
      *  well as any additional HTML markup to include
      */
     public function getAdminEditFields($package, $vars = null)
@@ -644,7 +698,11 @@ class Ispconfig extends Module
         $domain = $fields->label(Language::_('Ispconfig.service_field.domain', true), 'ispconfig_domain');
         // Create domain field and attach to domain label
         $domain->attach(
-            $fields->fieldText('ispconfig_domain', $this->Html->ifSet($vars->ispconfig_domain), ['id'=>'ispconfig_domain'])
+            $fields->fieldText(
+                'ispconfig_domain',
+                $this->Html->ifSet($vars->ispconfig_domain),
+                ['id' => 'ispconfig_domain']
+            )
         );
         // Set the label as a field
         $fields->setField($domain);
@@ -653,7 +711,11 @@ class Ispconfig extends Module
         $username = $fields->label(Language::_('Ispconfig.service_field.username', true), 'ispconfig_username');
         // Create username field and attach to username label
         $username->attach(
-            $fields->fieldText('ispconfig_username', $this->Html->ifSet($vars->ispconfig_username), ['id'=>'ispconfig_username'])
+            $fields->fieldText(
+                'ispconfig_username',
+                $this->Html->ifSet($vars->ispconfig_username),
+                ['id' => 'ispconfig_username']
+            )
         );
         // Set the label as a field
         $fields->setField($username);
@@ -678,10 +740,35 @@ class Ispconfig extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param array $vars An array of user supplied info to satisfy the request
-     * @param bool $edit True if this is an edit, false otherwise
      * @return bool True if the service validates, false otherwise. Sets Input errors when false.
      */
-    public function validateService($package, array $vars = null, $edit = false)
+    public function validateService($package, array $vars = null)
+    {
+        $this->Input->setRules($this->getServiceRules($vars));
+
+        return $this->Input->validates($vars);
+    }
+    /**
+     * Attempts to validate an existing service against a set of service info updates. Sets Input errors on failure.
+     *
+     * @param stdClass $service A stdClass object representing the service to validate for editing
+     * @param array $vars An array of user-supplied info to satisfy the request
+     * @return bool True if the service update validates or false otherwise. Sets Input errors when false.
+     */
+    public function validateServiceEdit($service, array $vars = null)
+    {
+        $this->Input->setRules($this->getServiceRules($vars, true));
+        return $this->Input->validates($vars);
+    }
+
+    /**
+     * Returns the rule set for adding/editing a service
+     *
+     * @param array $vars A list of input vars
+     * @param bool $edit True to get the edit rules, false for the add rules
+     * @return array Service rules
+     */
+    private function getServiceRules(array $vars = null, $edit = false)
     {
         $rules = [
             'ispconfig_domain' => [
@@ -730,9 +817,7 @@ class Ispconfig extends Module
             }
         }
 
-        $this->Input->setRules($rules);
-
-        return $this->Input->validates($vars);
+        return $rules;
     }
 
     /**
@@ -758,8 +843,13 @@ class Ispconfig extends Module
      * @see Module::getModule()
      * @see Module::getModuleRow()
      */
-    public function addService($package, array $vars = null, $parent_package = null, $parent_service = null, $status = 'pending')
-    {
+    public function addService(
+        $package,
+        array $vars = null,
+        $parent_package = null,
+        $parent_service = null,
+        $status = 'pending'
+    ) {
         $row = $this->getModuleRow();
 
         if (!$row) {
@@ -818,7 +908,7 @@ class Ispconfig extends Module
 
             // Create website in the ISPConfig client
             $this->log($row->meta->host_name . '|sites_web_domain_add', null, 'input', true);
-            $result = $this->parseResponse($api->addSite($client_id, $vars['ispconfig_domain']));
+            $this->parseResponse($api->addSite($client_id, $vars['ispconfig_domain']));
 
             if ($this->Input->errors()) {
                 return;
@@ -871,7 +961,7 @@ class Ispconfig extends Module
         $row = $this->getModuleRow();
         $api = $this->getApi($row->meta->host_name, $row->meta->user_name, $row->meta->password, $row->meta->use_ssl);
 
-        $this->validateService($package, $vars, true);
+        $this->validateServiceEdit($service, $vars);
 
         if ($this->Input->errors()) {
             return;
@@ -900,7 +990,7 @@ class Ispconfig extends Module
             // Update password (if changed)
             if (isset($delta['ispconfig_password'])) {
                 $this->log($row->meta->host_name . '|client_update', '***', 'input', true);
-                $result = $this->parseResponse($api->updateClientPassword($client_id, $delta['ispconfig_password']));
+                $this->parseResponse($api->updateClientPassword($client_id, $delta['ispconfig_password']));
             }
         }
 
@@ -989,7 +1079,12 @@ class Ispconfig extends Module
     public function cancelService($package, $service, $parent_package = null, $parent_service = null)
     {
         if (($row = $this->getModuleRow())) {
-            $api = $this->getApi($row->meta->host_name, $row->meta->user_name, $row->meta->password, $row->meta->use_ssl);
+            $api = $this->getApi(
+                $row->meta->host_name,
+                $row->meta->user_name,
+                $row->meta->password,
+                $row->meta->use_ssl
+            );
 
             $service_fields = $this->serviceFieldsToObject($service->fields);
 
@@ -997,7 +1092,12 @@ class Ispconfig extends Module
             $client_id = $api->getClientIdByUsername($service_fields->ispconfig_username);
 
             // Delete ISPConfig client account
-            $this->log($row->meta->host_name . '|client_delete_everything', serialize($service_fields->ispconfig_username), 'input', true);
+            $this->log(
+                $row->meta->host_name . '|client_delete_everything',
+                serialize($service_fields->ispconfig_username),
+                'input',
+                true
+            );
             $this->parseResponse($api->deleteClient($client_id));
 
             // Update the number of accounts on the server
@@ -1026,10 +1126,20 @@ class Ispconfig extends Module
      * @see Module::getModule()
      * @see Module::getModuleRow()
      */
-    public function changeServicePackage($package_from, $package_to, $service, $parent_package = null, $parent_service = null)
-    {
+    public function changeServicePackage(
+        $package_from,
+        $package_to,
+        $service,
+        $parent_package = null,
+        $parent_service = null
+    ) {
         if (($row = $this->getModuleRow())) {
-            $api = $this->getApi($row->meta->host_name, $row->meta->user_name, $row->meta->password, $row->meta->use_ssl);
+            $api = $this->getApi(
+                $row->meta->host_name,
+                $row->meta->user_name,
+                $row->meta->password,
+                $row->meta->use_ssl
+            );
 
             // Only request a package change if it has changed
             if ($package_from->meta->package != $package_to->meta->package) {
@@ -1039,8 +1149,22 @@ class Ispconfig extends Module
                 $client_id = $api->getClientIdByUsername($service_fields->ispconfig_username);
 
                 // Change service package
-                $this->log($row->meta->host_name . '|client_update', serialize([$service_fields->ispconfig_username, $package_to->meta->package]), 'input', true);
-                $this->parseResponse($api->updateClient($client_id, ['template_master' => $package_to->meta->package, 'password' => $service_fields->ispconfig_password]));
+                $this->log(
+                    $row->meta->host_name . '|client_update',
+                    serialize([$service_fields->ispconfig_username,
+                    $package_to->meta->package]),
+                    'input',
+                    true
+                );
+                $this->parseResponse(
+                    $api->updateClient(
+                        $client_id,
+                        [
+                            'template_master' => $package_to->meta->package,
+                            'password' => $service_fields->ispconfig_password
+                        ]
+                    )
+                );
             }
         }
 
@@ -1175,7 +1299,12 @@ class Ispconfig extends Module
         $client_id = $api->getClientIdByUsername($service_fields->ispconfig_username);
 
         // Fetch account info
-        $this->log($row->meta->host_name . '|client_get', serialize($service_fields->ispconfig_username), 'input', true);
+        $this->log(
+            $row->meta->host_name . '|client_get',
+            serialize($service_fields->ispconfig_username),
+            'input',
+            true
+        );
         $stats->account_info = $this->parseResponse($api->getClient($client_id));
 
         return $stats;
@@ -1375,26 +1504,32 @@ class Ispconfig extends Module
         $pool_size = strlen($pool);
 
         if ($length < 5) {
-            for ($i=$length; $i < 8; $i++) {
+            for ($i = $length; $i < 9; $i++) {
                 $username .= substr($pool, mt_rand(0, $pool_size - 1), 1);
             }
             $length = strlen($username);
         }
 
-        $username = substr($username, 0, min($length, 8));
+        $username = substr($username, 0, min($length, 9));
 
         // Check for an existing user account
         $row = $this->getModuleRow();
 
         if ($row) {
-            $api = $this->getApi($row->meta->host_name, $row->meta->user_name, $row->meta->password, $row->meta->use_ssl);
+            $api = $this->getApi(
+                $row->meta->host_name,
+                $row->meta->user_name,
+                $row->meta->password,
+                $row->meta->use_ssl
+            );
         }
 
+        $account_matching_characters = 3;
         // Username exists, create another instead
         if ((bool) $api->getClientIdByUsername($username)) {
-            for ($i=0; $i < (int) str_repeat(9, $account_matching_characters); $i++) {
+            for ($i = 0; $i < (int) str_repeat(9, $account_matching_characters); $i++) {
                 $new_username = substr($username, 0, -$account_matching_characters) . $i;
-                if (!array_key_exists($new_username, $accounts)) {
+                if (!(bool) $api->getClientIdByUsername($new_username)) {
                     $username = $new_username;
                     break;
                 }
@@ -1418,7 +1553,7 @@ class Ispconfig extends Module
         $length = mt_rand(max($min_length, 5), min($max_length, 14));
         $password = '';
 
-        for ($i=0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             $password .= substr($pool, mt_rand(0, $pool_size - 1), 1);
         }
 
@@ -1446,8 +1581,8 @@ class Ispconfig extends Module
             'state' => isset($vars['ispconfig_state']) ? $vars['ispconfig_state'] : null,
             'country' => isset($vars['ispconfig_country']) ? $vars['ispconfig_country'] : null,
             'template_master' => $package->meta->package,
-            'web_php_options' => $package->meta->php_options,
-            'ssh_chroot' => $package->meta->ssh_options
+            'web_php_options' => implode(',', $package->meta->php_options),
+            'ssh_chroot' => implode(',', $package->meta->ssh_options)
         ];
 
         return $fields;
@@ -1456,8 +1591,8 @@ class Ispconfig extends Module
     /**
      * Parses the response from the API into a stdClass object.
      *
-     * @param string $response The response from the API
-     * @return stdClass A stdClass object representing the response, void if the response was an error
+     * @param mixed $response The response from the API
+     * @return mixed The response, void if the response was an error
      */
     private function parseResponse($response)
     {
@@ -1478,7 +1613,12 @@ class Ispconfig extends Module
         }
 
         // Log the response
-        $this->log($row->meta->host_name, $response, 'output', $success);
+        $this->log(
+            $row->meta->host_name,
+            is_array($response) ? serialize($response) : (string) $response,
+            'output',
+            $success
+        );
 
         // Return if any errors encountered
         if (!$success) {
@@ -1532,7 +1672,7 @@ class Ispconfig extends Module
                 $success = true;
             }
 
-            $this->log($module_row->meta->host_name, $packages, 'output', $success);
+            $this->log($module_row->meta->host_name, serialize($packages), 'output', $success);
         } catch (Exception $e) {
             // API request failed
         }
@@ -1566,7 +1706,7 @@ class Ispconfig extends Module
                 $success = true;
             }
 
-            $this->log($module_row->meta->host_name, $options, 'output', $success);
+            $this->log($module_row->meta->host_name, serialize($options), 'output', $success);
         } catch (Exception $e) {
             // API request failed
         }
@@ -1600,7 +1740,7 @@ class Ispconfig extends Module
                 $success = true;
             }
 
-            $this->log($module_row->meta->host_name, $options, 'output', $success);
+            $this->log($module_row->meta->host_name, serialize($options), 'output', $success);
         } catch (Exception $e) {
             // API request failed
         }
@@ -1617,34 +1757,34 @@ class Ispconfig extends Module
     private function getRowRules(&$vars)
     {
         $rules = [
-            'server_name'=>[
-                'valid'=>[
-                    'rule'=>'isEmpty',
-                    'negate'=>true,
-                    'message'=>Language::_('Ispconfig.!error.server_name_valid', true)
+            'server_name' => [
+                'valid' => [
+                    'rule' => 'isEmpty',
+                    'negate' => true,
+                    'message' => Language::_('Ispconfig.!error.server_name_valid', true)
                 ]
             ],
-            'host_name'=>[
-                'valid'=>[
-                    'rule'=>[[$this, 'validateHostName']],
-                    'message'=>Language::_('Ispconfig.!error.host_name_valid', true)
+            'host_name' => [
+                'valid' => [
+                    'rule' => [[$this, 'validateHostName']],
+                    'message' => Language::_('Ispconfig.!error.host_name_valid', true)
                 ]
             ],
-            'user_name'=>[
-                'valid'=>[
-                    'rule'=>'isEmpty',
-                    'negate'=>true,
-                    'message'=>Language::_('Ispconfig.!error.user_name_valid', true)
+            'user_name' => [
+                'valid' => [
+                    'rule' => 'isEmpty',
+                    'negate' => true,
+                    'message' => Language::_('Ispconfig.!error.user_name_valid', true)
                 ]
             ],
-            'password'=>[
-                'valid'=>[
-                    'last'=>true,
-                    'rule'=>'isEmpty',
-                    'negate'=>true,
-                    'message'=>Language::_('Ispconfig.!error.remote_password_valid', true)
+            'password' => [
+                'valid' => [
+                    'last' => true,
+                    'rule' => 'isEmpty',
+                    'negate' => true,
+                    'message' => Language::_('Ispconfig.!error.remote_password_valid', true)
                 ],
-                'valid_connection'=>[
+                'valid_connection' => [
                     'rule' => [
                         [$this, 'validateConnection'],
                         $vars['host_name'],
@@ -1652,23 +1792,23 @@ class Ispconfig extends Module
                         $vars['use_ssl'],
                         &$vars['account_count']
                     ],
-                    'message'=>Language::_('Ispconfig.!error.remote_password_valid_connection', true)
+                    'message' => Language::_('Ispconfig.!error.remote_password_valid_connection', true)
                 ]
             ],
-            'account_limit'=>[
-                'valid'=>[
-                    'rule'=>['matches', '/^([0-9]+)?$/'],
-                    'message'=>Language::_('Ispconfig.!error.account_limit_valid', true)
+            'account_limit' => [
+                'valid' => [
+                    'rule' => ['matches', '/^([0-9]+)?$/'],
+                    'message' => Language::_('Ispconfig.!error.account_limit_valid', true)
                 ]
             ],
-            'name_servers'=>[
-                'count'=>[
-                    'rule'=>[[$this, 'validateNameServerCount']],
-                    'message'=>Language::_('Ispconfig.!error.name_servers_count', true)
+            'name_servers' => [
+                'count' => [
+                    'rule' => [[$this, 'validateNameServerCount']],
+                    'message' => Language::_('Ispconfig.!error.name_servers_count', true)
                 ],
-                'valid'=>[
-                    'rule'=>[[$this, 'validateNameServers']],
-                    'message'=>Language::_('Ispconfig.!error.name_servers_valid', true)
+                'valid' => [
+                    'rule' => [[$this, 'validateNameServers']],
+                    'message' => Language::_('Ispconfig.!error.name_servers_valid', true)
                 ]
             ]
         ];
@@ -1682,7 +1822,7 @@ class Ispconfig extends Module
      * @param array $vars An array of key/value data pairs
      * @return array An array of Input rules suitable for Input::setRules()
      */
-    private function getPackageRules($vars)
+    private function getPackageRules(array $vars)
     {
         $rules = [
             'meta[package]' => [

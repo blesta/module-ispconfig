@@ -90,7 +90,7 @@ class IspconfigApi
     /**
      * Creates a new client in the server.
      *
-     * @param array $params An array contaning the following arguments:
+     * @param array $params An array containing the following arguments:
      *  - contact_name: Specifies the client name.
      *  - company_name: Specifies the client company. (optional)
      *  - customer_no: Specifies the client customer number. (optional)
@@ -110,68 +110,71 @@ class IspconfigApi
      */
     public function createClient($params, $reseller_id = 0)
     {
-        $params = array_merge([
-            'company_name' => '',
-            'contact_name' => '',
-            'customer_no' => '',
-            'vat_id' => '',
-            'street' => '',
-            'zip' => '',
-            'city' => '',
-            'state' => '',
-            'country' => '',
-            'telephone' => '',
-            'mobile' => '',
-            'fax' => '',
-            'email' => '',
-            'internet' => '',
-            'icq' => '',
-            'notes' => '',
-            'default_mailserver' => 1,
-            'limit_maildomain' => -1,
-            'limit_mailbox' => -1,
-            'limit_mailalias' => -1,
-            'limit_mailaliasdomain' => -1,
-            'limit_mailforward' => -1,
-            'limit_mailcatchall' => -1,
-            'limit_mailrouting' => 0,
-            'limit_mailfilter' => -1,
-            'limit_fetchmail' => -1,
-            'limit_mailquota' => -1,
-            'limit_spamfilter_wblist' => 0,
-            'limit_spamfilter_user' => 0,
-            'limit_spamfilter_policy' => 1,
-            'default_webserver' => 1,
-            'limit_web_ip' => '',
-            'limit_web_domain' => -1,
-            'limit_web_quota' => -1,
-            'web_php_options' => 'no,fast-cgi,cgi,mod,suphp',
-            'limit_web_subdomain' => -1,
-            'limit_web_aliasdomain' => -1,
-            'limit_ftp_user' => -1,
-            'limit_shell_user' => 0,
-            'ssh_chroot' => 'no,jailkit,ssh-chroot',
-            'limit_webdav_user' => 0,
-            'default_dnsserver' => 1,
-            'limit_dns_zone' => -1,
-            'limit_dns_slave_zone' => -1,
-            'limit_dns_record' => -1,
-            'default_dbserver' => 1,
-            'limit_database' => -1,
-            'limit_cron' => 0,
-            'limit_cron_type' => 'url',
-            'limit_cron_frequency' => 5,
-            'limit_traffic_quota' => -1,
-            'limit_client' => 0,
-            'parent_client_id' => 0,
-            'username' => '',
-            'password' => '',
-            'language' => 'en',
-            'usertheme' => 'default',
-            'template_master' => 0,
-            'template_additional' => '',
-            'created_at' => 0
-        ], $params);
+        $params = array_merge(
+            [
+                'company_name' => '',
+                'contact_name' => '',
+                'customer_no' => '',
+                'vat_id' => '',
+                'street' => '',
+                'zip' => '',
+                'city' => '',
+                'state' => '',
+                'country' => '',
+                'telephone' => '',
+                'mobile' => '',
+                'fax' => '',
+                'email' => '',
+                'internet' => '',
+                'icq' => '',
+                'notes' => '',
+                'default_mailserver' => 1,
+                'limit_maildomain' => -1,
+                'limit_mailbox' => -1,
+                'limit_mailalias' => -1,
+                'limit_mailaliasdomain' => -1,
+                'limit_mailforward' => -1,
+                'limit_mailcatchall' => -1,
+                'limit_mailrouting' => 0,
+                'limit_mailfilter' => -1,
+                'limit_fetchmail' => -1,
+                'limit_mailquota' => -1,
+                'limit_spamfilter_wblist' => 0,
+                'limit_spamfilter_user' => 0,
+                'limit_spamfilter_policy' => 1,
+                'default_webserver' => 1,
+                'limit_web_ip' => '',
+                'limit_web_domain' => -1,
+                'limit_web_quota' => -1,
+                'web_php_options' => 'no,fast-cgi,cgi,mod,suphp',
+                'limit_web_subdomain' => -1,
+                'limit_web_aliasdomain' => -1,
+                'limit_ftp_user' => -1,
+                'limit_shell_user' => 0,
+                'ssh_chroot' => 'no,jailkit,ssh-chroot',
+                'limit_webdav_user' => 0,
+                'default_dnsserver' => 1,
+                'limit_dns_zone' => -1,
+                'limit_dns_slave_zone' => -1,
+                'limit_dns_record' => -1,
+                'default_dbserver' => 1,
+                'limit_database' => -1,
+                'limit_cron' => 0,
+                'limit_cron_type' => 'url',
+                'limit_cron_frequency' => 5,
+                'limit_traffic_quota' => -1,
+                'limit_client' => 0,
+                'parent_client_id' => 0,
+                'username' => '',
+                'password' => '',
+                'language' => 'en',
+                'usertheme' => 'default',
+                'template_master' => 0,
+                'template_additional' => '',
+                'created_at' => 0
+            ],
+            $params
+        );
 
         return $this->apiRequest('client_add', [$reseller_id, $params]);
     }
@@ -180,7 +183,7 @@ class IspconfigApi
      * Deletes an existing client in the server.
      *
      * @param int $client_id The client id
-     * @return bool True if the user has been deleted succesfully, false otherwise
+     * @return bool True if the user has been deleted successfully, false otherwise
      */
     public function deleteClient($client_id)
     {
@@ -212,7 +215,7 @@ class IspconfigApi
      * Updates the information of an existing client.
      *
      * @param int $client_id The client id
-     * @param array $params An array contaning the following arguments:
+     * @param array $params An array containing the following arguments:
      *  - contact_name: Specifies the client name.
      *  - company_name: Specifies the client company. (optional)
      *  - customer_no: Specifies the client customer number. (optional)
@@ -228,7 +231,7 @@ class IspconfigApi
      *  - web_php_options: A numerical indexed array containing the PHP options enabled for the account.
      *  - ssh_chroot: A numerical indexed array containing the SSH options enabled for the account.
      * @param int $reseller_id Specifies the reseller id for this account
-     * @return bool True if the user has been updated succesfully, false otherwise
+     * @return bool True if the user has been updated successfully, false otherwise
      */
     public function updateClient($client_id, $params, $reseller_id = 0)
     {
@@ -244,13 +247,20 @@ class IspconfigApi
      * @param int $client_id The client id
      * @param string $password The new client password
      * @param int $reseller_id Specifies the reseller id for this account
-     * @return bool True if the user has been updated succesfully, false otherwise
+     * @return bool True if the user has been updated successfully, false otherwise
      */
     public function updateClientPassword($client_id, $password, $reseller_id = 0)
     {
-        return (bool) $this->apiRequest('client_update', [$client_id, $reseller_id, [
-            'password' => $password
-        ]]);
+        return (bool) $this->apiRequest(
+            'client_update',
+            [
+                $client_id,
+                $reseller_id,
+                [
+                    'password' => $password
+                ]
+            ]
+        );
     }
 
     /**
@@ -306,11 +316,14 @@ class IspconfigApi
      */
     public function getAllLimitsTemplates($type = 'main')
     {
-        $client_templastes = $this->apiRequest('client_templates_get_all');
-        $templates_list = [];
+        $client_templates = $this->apiRequest('client_templates_get_all');
+        $templates_list = ['0' => 'Custom'];
 
-        foreach ($client_templastes as $template) {
-            if ($type == 'main' && $template['template_type'] == 'm' || $type == 'addon' && $template['template_type'] == 'a' || $type == 'all') {
+        foreach ($client_templates as $template) {
+            if ($type == 'main' && $template['template_type'] == 'm'
+                || $type == 'addon' && $template['template_type'] == 'a'
+                || $type == 'all'
+            ) {
                 $templates_list[$template['template_id']] = $template['template_name'];
             }
         }
@@ -337,30 +350,36 @@ class IspconfigApi
      *
      * @param int $client_id The client id
      * @param string $domain The site domain
-     * @return bool True if the site has been added succesfully, false otherwise
+     * @return bool True if the site has been added successfully, false otherwise
      */
     public function addSite($client_id, $domain)
     {
         $client = $this->getClient($client_id);
 
-        return (bool) $this->apiRequest('sites_web_domain_add', [$client_id, [
-            'server_id' => $this->getCurrentServerId(),
-            'ip_address' => '*',
-            'domain' => $domain,
-            'type' => 'vhost',
-            'cgi' => 'y',
-            'ssi' => 'y',
-            'suexec' => 'y',
-            'is_subdomainwww' => true,
-            'php' => 'y',
-            'hd_quota' => $client['limit_web_quota'],
-            'traffic_quota' => $client['limit_traffic_quota'],
-            'allow_override' => 'All',
-            'pm_process_idle_timeout' => 10000,
-            'pm_max_requests' => 100,
-            'http_port' => 80,
-            'https_port' => 443,
-            'active' => 'y'
-        ]]);
+        return (bool) $this->apiRequest(
+            'sites_web_domain_add',
+            [
+                $client_id,
+                [
+                    'server_id' => $this->getCurrentServerId(),
+                    'ip_address' => '*',
+                    'domain' => $domain,
+                    'type' => 'vhost',
+                    'cgi' => 'y',
+                    'ssi' => 'y',
+                    'suexec' => 'y',
+                    'is_subdomainwww' => true,
+                    'php' => 'y',
+                    'hd_quota' => $client['limit_web_quota'],
+                    'traffic_quota' => $client['limit_traffic_quota'],
+                    'allow_override' => 'All',
+                    'pm_process_idle_timeout' => 10000,
+                    'pm_max_requests' => 100,
+                    'http_port' => 80,
+                    'https_port' => 443,
+                    'active' => 'y'
+                ]
+            ]
+        );
     }
 }
