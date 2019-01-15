@@ -13,7 +13,7 @@ class Ispconfig extends Module
     /**
      * @var string The version of this module
      */
-    private static $version = '1.1.0';
+    private static $version = '1.2.0';
     /**
      * @var string The authors of this module
      */
@@ -869,6 +869,9 @@ class Ispconfig extends Module
         if (array_key_exists('ispconfig_domain', $vars)) {
             Loader::loadModels($this, ['Clients']);
 
+            // Force domain to lower case
+            $vars['ispconfig_domain'] = strtolower($vars['ispconfig_domain']);
+
             // Generate a username
             if (empty($vars['ispconfig_username'])) {
                 $vars['ispconfig_username'] = $this->generateUsername($vars['ispconfig_domain']);
@@ -969,6 +972,9 @@ class Ispconfig extends Module
         if ($this->Input->errors()) {
             return;
         }
+
+        // Force domain to lower case
+        $vars['ispconfig_domain'] = strtolower($vars['ispconfig_domain']);
 
         $service_fields = $this->serviceFieldsToObject($service->fields);
 
@@ -1372,7 +1378,7 @@ class Ispconfig extends Module
 
         return $this->Input->matches(
             $host_name,
-            "/^([a-z0-9]|[a-z0-9][a-z0-9\-]{0,61}[a-z0-9])(\.([a-z0-9]|[a-z0-9][a-z0-9\-]{0,61}[a-z0-9]))+$/"
+            "/^([a-z0-9]|[a-z0-9][a-z0-9\-]{0,61}[a-z0-9])(\.([a-z0-9]|[a-z0-9][a-z0-9\-]{0,61}[a-z0-9]))+$/i"
         );
     }
 
