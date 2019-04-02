@@ -69,7 +69,7 @@
                     </thead>
                     <tbody>
                         <?php
-                        $num_servers = count($this->Html->ifSet($vars->name_servers));
+                        $num_servers = count($this->Html->ifSet($vars->name_servers, []));
                         for ($i = 0; $i < max(2, $num_servers); $i++) {
                         ?>
                         <tr class="ns_row<?php echo ($i % 2 == 1) ? ' odd_row' : ''; ?>">
