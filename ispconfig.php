@@ -13,7 +13,7 @@ class Ispconfig extends Module
     /**
      * @var string The version of this module
      */
-    private static $version = '1.2.1';
+    private static $version = '1.3.0';
     /**
      * @var string The authors of this module
      */
@@ -470,7 +470,7 @@ class Ispconfig extends Module
      */
     public function addModuleRow(array &$vars)
     {
-        $meta_fields = ['server_name', 'host_name', 'user_name', 'password',
+        $meta_fields = ['server_name', 'host_name', 'port', 'user_name', 'password',
             'use_ssl', 'account_limit', 'name_servers', 'notes'];
         $encrypted_fields = ['user_name', 'password'];
 
@@ -513,7 +513,7 @@ class Ispconfig extends Module
      */
     public function editModuleRow($module_row, array &$vars)
     {
-        $meta_fields = ['server_name', 'host_name', 'user_name', 'password',
+        $meta_fields = ['server_name', 'host_name', 'port', 'user_name', 'password',
             'use_ssl', 'account_limit', 'account_count', 'name_servers', 'notes'];
         $encrypted_fields = ['user_name', 'password'];
 
@@ -1646,11 +1646,11 @@ class Ispconfig extends Module
      * @param mixed $use_ssl
      * @return IspconfigApi The IspconfigApi instance
      */
-    private function getApi($hostname, $username, $password, $use_ssl = true)
+    private function getApi($hostname, $username, $password, $use_ssl = true, $port = '8080')
     {
         Loader::load(dirname(__FILE__) . DS . 'apis' . DS . 'ispconfig_api.php');
 
-        $api = new IspconfigApi($hostname, $username, $password, $use_ssl);
+        $api = new IspconfigApi($hostname, $username, $password, $use_ssl, $port);
 
         return $api;
     }

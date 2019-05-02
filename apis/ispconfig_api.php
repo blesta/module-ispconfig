@@ -42,13 +42,15 @@ class IspconfigApi
      * @param mixed $username The remote username
      * @param mixed $password The remote password
      * @param mixed $use_ssl True to connect to the api using SSL
+     * @param mixed $port The ISPConfig port
      */
-    public function __construct($hostname, $username, $password, $use_ssl = false)
+    public function __construct($hostname, $username, $password, $use_ssl = false, $port = '8080')
     {
         $this->hostname = $hostname;
         $this->username = $username;
         $this->password = $password;
         $this->use_ssl = $use_ssl;
+        $this->port = $port;
     }
 
     /**
@@ -61,8 +63,8 @@ class IspconfigApi
     public function apiRequest($function, array $params = [])
     {
         // Set API location
-        $soap_location = ($this->use_ssl ? 'https' : 'http') . '://' . $this->hostname . ':8080/remote/index.php';
-        $soap_uri = ($this->use_ssl ? 'https' : 'http') . '://' . $this->hostname . ':8080/remote/';
+        $soap_location = ($this->use_ssl ? 'https' : 'http') . '://' . $this->hostname . ':' . $this->port . '/remote/index.php';
+        $soap_uri = ($this->use_ssl ? 'https' : 'http') . '://' . $this->hostname . ':' . $this->port . '/remote/';
 
         // Create SOAP connection
         $client = new SoapClient(null, [

@@ -61,6 +61,8 @@ $lang['Ispconfig.edit_row.add_btn'] = 'Edit Server';
 
 $lang['Ispconfig.row_meta.server_name'] = 'Server Label';
 $lang['Ispconfig.row_meta.host_name'] = 'Hostname';
+$lang['Ispconfig.row_meta.port'] = 'Port';
+$lang['Ispconfig.row_meta.default_port'] = '8080';
 $lang['Ispconfig.row_meta.user_name'] = 'User Name';
 $lang['Ispconfig.row_meta.password'] = 'Password';
 $lang['Ispconfig.row_meta.use_ssl'] = 'Use SSL when connecting to the API (recommended)';
