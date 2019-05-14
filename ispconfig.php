@@ -863,7 +863,13 @@ class Ispconfig extends Module
             return;
         }
 
-        $api = $this->getApi($row->meta->host_name, $row->meta->user_name, $row->meta->password, $row->meta->use_ssl);
+        $api = $this->getApi(
+            $row->meta->host_name,
+            $row->meta->user_name,
+            $row->meta->password,
+            $row->meta->use_ssl,
+            $row->meta->port
+        );
 
         // Generate username/password
         if (array_key_exists('ispconfig_domain', $vars)) {
@@ -965,7 +971,13 @@ class Ispconfig extends Module
     public function editService($package, $service, array $vars = null, $parent_package = null, $parent_service = null)
     {
         $row = $this->getModuleRow();
-        $api = $this->getApi($row->meta->host_name, $row->meta->user_name, $row->meta->password, $row->meta->use_ssl);
+        $api = $this->getApi(
+            $row->meta->host_name,
+            $row->meta->user_name,
+            $row->meta->password,
+            $row->meta->use_ssl,
+            $row->meta->port
+        );
 
         $this->validateServiceEdit($service, $vars);
 
@@ -1092,7 +1104,8 @@ class Ispconfig extends Module
                 $row->meta->host_name,
                 $row->meta->user_name,
                 $row->meta->password,
-                $row->meta->use_ssl
+                $row->meta->use_ssl,
+                $row->meta->port
             );
 
             $service_fields = $this->serviceFieldsToObject($service->fields);
@@ -1147,7 +1160,8 @@ class Ispconfig extends Module
                 $row->meta->host_name,
                 $row->meta->user_name,
                 $row->meta->password,
-                $row->meta->use_ssl
+                $row->meta->use_ssl,
+                $row->meta->port
             );
 
             // Only request a package change if it has changed
@@ -1299,7 +1313,13 @@ class Ispconfig extends Module
     private function getStats($package, $service)
     {
         $row = $this->getModuleRow();
-        $api = $this->getApi($row->meta->host_name, $row->meta->user_name, $row->meta->password, $row->meta->use_ssl);
+        $api = $this->getApi(
+            $row->meta->host_name,
+            $row->meta->user_name,
+            $row->meta->password,
+            $row->meta->use_ssl,
+            $row->meta->port
+        );
 
         $stats = new stdClass();
         $service_fields = $this->serviceFieldsToObject($service->fields);
@@ -1450,7 +1470,8 @@ class Ispconfig extends Module
             $module_row->meta->host_name,
             $module_row->meta->user_name,
             $module_row->meta->password,
-            $module_row->meta->use_ssl
+            $module_row->meta->use_ssl,
+            $module_row->meta->port
         );
 
         // Get the number of accounts on the server
@@ -1476,12 +1497,13 @@ class Ispconfig extends Module
      * @param mixed $hostname
      * @param mixed $username
      * @param mixed $use_ssl
+     * @param mixed $port
      * @return bool True if the connection is valid, false otherwise
      */
-    public function validateConnection($password, $hostname, $username, $use_ssl, &$account_count)
+    public function validateConnection($password, $hostname, $username, $use_ssl, &$account_count, $port)
     {
         try {
-            $api = $this->getApi($hostname, $username, $password, $use_ssl);
+            $api = $this->getApi($hostname, $username, $password, $use_ssl, $port);
 
             $count = $this->getAccountCount($api);
             if ($count !== false) {
@@ -1529,7 +1551,8 @@ class Ispconfig extends Module
                 $row->meta->host_name,
                 $row->meta->user_name,
                 $row->meta->password,
-                $row->meta->use_ssl
+                $row->meta->use_ssl,
+                $row->meta->port
             );
         }
 
@@ -1667,7 +1690,8 @@ class Ispconfig extends Module
             $module_row->meta->host_name,
             $module_row->meta->user_name,
             $module_row->meta->password,
-            $module_row->meta->use_ssl
+            $module_row->meta->use_ssl,
+            $module_row->meta->port
         );
         $packages = [];
 
@@ -1701,7 +1725,8 @@ class Ispconfig extends Module
             $module_row->meta->host_name,
             $module_row->meta->user_name,
             $module_row->meta->password,
-            $module_row->meta->use_ssl
+            $module_row->meta->use_ssl,
+            $module_row->meta->port
         );
         $options = [];
 
@@ -1735,7 +1760,8 @@ class Ispconfig extends Module
             $module_row->meta->host_name,
             $module_row->meta->user_name,
             $module_row->meta->password,
-            $module_row->meta->use_ssl
+            $module_row->meta->use_ssl,
+            $module_row->meta->port
         );
         $options = [];
 
@@ -1799,7 +1825,8 @@ class Ispconfig extends Module
                         $vars['host_name'],
                         $vars['user_name'],
                         $vars['use_ssl'],
-                        &$vars['account_count']
+                        &$vars['account_count'],
+                        $vars['port']
                     ],
                     'message' => Language::_('Ispconfig.!error.remote_password_valid_connection', true)
                 ]
