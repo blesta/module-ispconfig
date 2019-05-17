@@ -32,6 +32,33 @@ class Ispconfig extends Module
     }
 
     /**
+     * Performs migration of data from $current_version (the current installed version)
+     * to the given file set version. Sets Input errors on failure, preventing
+     * the module from being upgraded.
+     *
+     * @param string $current_version The current installed version of this module
+     */
+    public function upgrade($current_version)
+    {
+        if (version_compare($current_version, '1.3.0', '<')) {
+            if (!isset($this->ModuleManager)) {
+                Loader::loadModels($this, ['ModuleManager']);
+            }
+
+            // Update all module rows to have a port of 8080
+            $modules = $this->ModuleManager->getByClass('ispconfig');
+            foreach ($modules as $module) {
+                $rows = $this->ModuleManager->getRows($module->id);
+                foreach ($rows as $row) {
+                    $meta = (array)$row->meta;
+                    $meta['port'] = '8080';
+                    $this->ModuleManager->editRow($row->id, $meta);
+                }
+            }
+        }
+    }
+
+    /**
      * Returns the name of this module.
      *
      * @return string The common name of this module

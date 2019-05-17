@@ -28,7 +28,7 @@
                     <li>
                         <?php
                         $this->Form->label($this->_('Ispconfig.row_meta.port', true), 'port');
-                        $this->Form->fieldText('port', $this->_('Ispconfig.row_meta.default_port', true));
+                        $this->Form->fieldText('port', $this->Html->ifSet($vars->port, $this->_('Ispconfig.row_meta.default_port', true)));
                         ?>
                     </li>
                     <li>
