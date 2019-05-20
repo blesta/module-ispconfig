@@ -1527,7 +1527,7 @@ class Ispconfig extends Module
      * @param mixed $port
      * @return bool True if the connection is valid, false otherwise
      */
-    public function validateConnection($password, $hostname, $username, $use_ssl, &$account_count, $port)
+    public function validateConnection($password, $hostname, $username, $use_ssl, &$account_count, $port = '8080')
     {
         try {
             $api = $this->getApi($hostname, $username, $password, $use_ssl, $port);
@@ -1830,6 +1830,12 @@ class Ispconfig extends Module
                 'valid' => [
                     'rule' => [[$this, 'validateHostName']],
                     'message' => Language::_('Ispconfig.!error.host_name_valid', true)
+                ]
+            ],
+            'port' => [
+                'format' => [
+                    'rule' => 'is_numeric',
+                    'message' => Language::_('Ispconfig.!error.port_format', true)
                 ]
             ],
             'user_name' => [

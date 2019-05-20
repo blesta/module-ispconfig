@@ -31,6 +31,11 @@ class IspconfigApi
     private $use_ssl;
 
     /**
+     * @var bool The port on which to connect
+     */
+    private $port;
+
+    /**
      * @var string Remote server session ID
      */
     private $session_id;
