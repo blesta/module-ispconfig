@@ -61,6 +61,8 @@ $lang['Ispconfig.edit_row.add_btn'] = 'Edit Server';
 
 $lang['Ispconfig.row_meta.server_name'] = 'Server Label';
 $lang['Ispconfig.row_meta.host_name'] = 'Hostname';
+$lang['Ispconfig.row_meta.port'] = 'Port';
+$lang['Ispconfig.row_meta.default_port'] = '8080';
 $lang['Ispconfig.row_meta.user_name'] = 'User Name';
 $lang['Ispconfig.row_meta.password'] = 'Password';
 $lang['Ispconfig.row_meta.use_ssl'] = 'Use SSL when connecting to the API (recommended)';
@@ -125,6 +127,7 @@ $lang['Ispconfig.service_field.tooltip.password'] = 'You may leave the password 
 // Errors
 $lang['Ispconfig.!error.server_name_valid'] = 'You must enter a Server Label.';
 $lang['Ispconfig.!error.host_name_valid'] = 'The Hostname appears to be invalid.';
+$lang['Ispconfig.!error.port_format'] = 'The port must be a number.';
 $lang['Ispconfig.!error.user_name_valid'] = 'The User Name appears to be invalid.';
 $lang['Ispconfig.!error.remote_password_valid'] = 'The Password appears to be invalid.';
 $lang['Ispconfig.!error.remote_password_valid_connection'] = 'A connection to the server could not be established. Please check to ensure that the Hostname, User Name, and Password are correct.';
