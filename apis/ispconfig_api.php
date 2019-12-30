@@ -117,25 +117,19 @@ class IspconfigApi
      */
     public function createClient($params, $reseller_id = 0)
     {
-        $params = array_merge(
-            [
-                'company_name' => '',
-                'contact_name' => '',
-                'customer_no' => '',
-                'vat_id' => '',
-                'street' => '',
-                'zip' => '',
-                'city' => '',
-                'state' => '',
-                'country' => '',
-                'telephone' => '',
-                'mobile' => '',
-                'fax' => '',
-                'email' => '',
-                'internet' => '',
-                'icq' => '',
-                'notes' => '',
-                'default_mailserver' => 1,
+        $limit_params = [];
+        if (isset($params['template_master']) && $params['template_master'] != 0) {
+            $limit_params = [
+                // Web Limits
+                'limit_web_domain' => -1,
+                'limit_web_quota' => -1,
+                'limit_traffic_quota' => -1,
+                'limit_web_subdomain' => -1,
+                'limit_web_aliasdomain' => -1,
+                'limit_ftp_user' => -1,
+                'limit_shell_user' => 0,
+                'limit_webdav_user' => 0,
+                // Email limits
                 'limit_maildomain' => -1,
                 'limit_mailbox' => -1,
                 'limit_mailalias' => -1,
@@ -149,41 +143,58 @@ class IspconfigApi
                 'limit_spamfilter_wblist' => 0,
                 'limit_spamfilter_user' => 0,
                 'limit_spamfilter_policy' => 1,
-                'default_webserver' => 1,
-                'limit_web_ip' => '',
-                'limit_web_domain' => -1,
-                'limit_web_quota' => -1,
-                'web_php_options' => 'no,fast-cgi,cgi,mod,suphp',
-                'limit_web_subdomain' => -1,
-                'limit_web_aliasdomain' => -1,
-                'limit_ftp_user' => -1,
-                'limit_shell_user' => 0,
-                'ssh_chroot' => 'no,jailkit,ssh-chroot',
-                'limit_webdav_user' => 0,
-                'default_dnsserver' => 1,
-                'limit_dns_zone' => -1,
-                'limit_dns_slave_zone' => -1,
-                'limit_dns_record' => -1,
-                'default_dbserver' => 1,
-                'limit_database' => -1,
+                // Cron Job Limits
                 'limit_cron' => 0,
                 'limit_cron_type' => 'url',
                 'limit_cron_frequency' => 5,
-                'limit_traffic_quota' => -1,
+                // DNS Servers
+                'limit_dns_zone' => -1,
+                'limit_dns_slave_zone' => -1,
+                'limit_dns_record' => -1,
+                'limit_database' => -1,
+                // Client Limits
                 'limit_client' => 0,
-                'parent_client_id' => 0,
-                'username' => '',
-                'password' => '',
-                'language' => 'en',
-                'usertheme' => 'default',
-                'template_master' => 0,
-                'template_additional' => '',
-                'created_at' => 0
-            ],
-            $params
-        );
+            ];
+        }
 
-        return $this->apiRequest('client_add', [$reseller_id, $params]);
+        $default_params = [
+            'company_name' => '',
+            'contact_name' => '',
+            'customer_no' => '',
+            'vat_id' => '',
+            'street' => '',
+            'zip' => '',
+            'city' => '',
+            'state' => '',
+            'country' => '',
+            'telephone' => '',
+            'mobile' => '',
+            'fax' => '',
+            'email' => '',
+            'internet' => '',
+            'icq' => '',
+            'notes' => '',
+            'default_mailserver' => 1,
+            'default_webserver' => 1,
+            'limit_web_ip' => '',
+            'web_php_options' => 'no,fast-cgi,cgi,mod,suphp',
+            'ssh_chroot' => 'no,jailkit,ssh-chroot',
+            'default_dnsserver' => 1,
+            'default_dbserver' => 1,
+            'parent_client_id' => 0,
+            'username' => '',
+            'password' => '',
+            'language' => 'en',
+            'usertheme' => 'default',
+            'template_master' => 0,
+            'template_additional' => '',
+            'created_at' => 0
+        ];
+
+        return $this->apiRequest(
+            'client_add',
+            [$reseller_id, array_merge($limit_params, array_merge($default_params, $params))]
+        );
     }
 
     /**
