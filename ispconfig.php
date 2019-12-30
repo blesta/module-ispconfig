@@ -14,7 +14,7 @@ class Ispconfig extends Module
     /**
      * @var string The version of this module
      */
-    private static $version = '1.4.0';
+    private static $version = '1.5.0';
     /**
      * @var string The authors of this module
      */
