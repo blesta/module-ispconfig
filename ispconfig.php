@@ -12,19 +12,13 @@ use Blesta\Core\Util\Validate\Server;
 class Ispconfig extends Module
 {
     /**
-     * @var string The version of this module
-     */
-    private static $version = '1.5.0';
-    /**
-     * @var string The authors of this module
-     */
-    private static $authors = [['name' => 'Phillips Data, Inc.', 'url' => 'http://www.blesta.com']];
-
-    /**
      * Initializes the module.
      */
     public function __construct()
     {
+        // Load configuration required by this module
+        $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
+
         // Load components required by this module
         Loader::loadComponents($this, ['Input']);
 
@@ -60,36 +54,6 @@ class Ispconfig extends Module
     }
 
     /**
-     * Returns the name of this module.
-     *
-     * @return string The common name of this module
-     */
-    public function getName()
-    {
-        return Language::_('Ispconfig.name', true);
-    }
-
-    /**
-     * Returns the version of this module.
-     *
-     * @return string The current version of this gateway
-     */
-    public function getVersion()
-    {
-        return self::$version;
-    }
-
-    /**
-     * Returns the name and url of the authors of this module.
-     *
-     * @return array The name and url of the authors of this module
-     */
-    public function getAuthors()
-    {
-        return self::$authors;
-    }
-
-    /**
      * Returns all tabs to display to an admin when managing a service whose
      * package uses this module.
      *
@@ -118,46 +82,6 @@ class Ispconfig extends Module
             'tabClientActions' => Language::_('Ispconfig.tab_client_actions', true),
             'tabClientStats' => Language::_('Ispconfig.tab_client_stats', true)
         ];
-    }
-
-    /**
-     * Returns a noun used to refer to a module row (e.g. "Server").
-     *
-     * @return string The noun used to refer to a module row
-     */
-    public function moduleRowName()
-    {
-        return Language::_('Ispconfig.module_row', true);
-    }
-
-    /**
-     * Returns a noun used to refer to a module row in plural form (e.g. "Servers", "VPSs", "Reseller Accounts", etc.).
-     *
-     * @return string The noun used to refer to a module row in plural form
-     */
-    public function moduleRowNamePlural()
-    {
-        return Language::_('Ispconfig.module_row_plural', true);
-    }
-
-    /**
-     * Returns a noun used to refer to a module group (e.g. "Server Group").
-     *
-     * @return string The noun used to refer to a module group
-     */
-    public function moduleGroupName()
-    {
-        return Language::_('Ispconfig.module_group', true);
-    }
-
-    /**
-     * Returns the key used to identify the primary field from the set of module row meta fields.
-     *
-     * @return string The key used to identify the primary field from the set of module row meta fields
-     */
-    public function moduleRowMetaKey()
-    {
-        return 'server_name';
     }
 
     /**

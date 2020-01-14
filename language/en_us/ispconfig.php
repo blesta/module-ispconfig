@@ -4,6 +4,7 @@
  */
 // Basics
 $lang['Ispconfig.name'] = 'ISPConfig';
+$lang['Ispconfig.description'] = 'ISPConfig 3 is an open source panel for Linux which is capable of managing multiple servers from one control panel.';
 $lang['Ispconfig.module_row'] = 'Server';
 $lang['Ispconfig.module_row_plural'] = 'Servers';
 $lang['Ispconfig.module_group'] = 'Server Group';

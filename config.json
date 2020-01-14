@@ -1,0 +1,19 @@
+{
+    "version": "1.6.0",
+    "name": "Interworx.name",
+    "description": "Interworx.description",
+    "authors": [
+        {
+            "name": "Phillips Data, Inc.",
+            "url": "http://www.blesta.com"
+        }
+    ],
+    "service": {
+        "name_key": "interworx_domain"
+    },
+    "module": {
+        "row": "Interworx.module_row",
+        "rows": "Interworx.module_row_plural",
+        "row_key": "server_name"
+    }
+}
