@@ -1,7 +1,7 @@
 {
     "version": "1.6.0",
-    "name": "Interworx.name",
-    "description": "Interworx.description",
+    "name": "Ispconfig.name",
+    "description": "Ispconfig.description",
     "authors": [
         {
             "name": "Phillips Data, Inc.",
@@ -9,11 +9,11 @@
         }
     ],
     "service": {
-        "name_key": "interworx_domain"
+        "name_key": "ispconfig_domain"
     },
     "module": {
-        "row": "Interworx.module_row",
-        "rows": "Interworx.module_row_plural",
+        "row": "Ispconfig.module_row",
+        "rows": "Ispconfig.module_row_plural",
         "row_key": "server_name"
     }
 }
