@@ -14,6 +14,10 @@
     "module": {
         "row": "Ispconfig.module_row",
         "rows": "Ispconfig.module_row_plural",
-        "row_key": "server_name"
+        "row_key": "server_name",
+        "group": "Ispconfig.module_group"
+    },
+    "package": {
+        "name_key": "ispconfig_domain"
     }
 }
