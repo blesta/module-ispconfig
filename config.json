@@ -8,6 +8,9 @@
             "url": "http://www.blesta.com"
         }
     ],
+    "package": {
+        "name_key": "ispconfig_domain"
+    },
     "service": {
         "name_key": "ispconfig_domain"
     },
@@ -17,7 +20,9 @@
         "row_key": "server_name",
         "group": "Ispconfig.module_group"
     },
-    "package": {
-        "name_key": "ispconfig_domain"
+    "email_tags": {
+        "module": ["host_name", "name_servers"],
+        "package": ["package"],
+        "service": ["ispconfig_domain", "ispconfig_username", "ispconfig_password"]
     }
 }
