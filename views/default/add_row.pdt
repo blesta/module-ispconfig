@@ -63,7 +63,7 @@
             </div>
             <div class="pad">
                 <div class="links_row">
-                    <a class="btn btn-default float-right btn-sm ns_row_add" href="#"><i class="fas fa-plus"></i> <span><?php $this->_('Ispconfig.add_row.name_server_btn'); ?></span></a>
+                    <a class="btn btn-default pull-right btn-sm ns_row_add" href="#"><i class="fas fa-plus"></i> <span><?php $this->_('Ispconfig.add_row.name_server_btn'); ?></span></a>
                 </div>
                 <table class="table">
                     <thead>
@@ -105,7 +105,7 @@
 
             <div class="button_row">
                 <?php
-                $this->Form->fieldSubmit('save', $this->_('Ispconfig.add_row.add_btn', true), ['class' => 'btn btn-primary float-right']);
+                $this->Form->fieldSubmit('save', $this->_('Ispconfig.add_row.add_btn', true), ['class' => 'btn btn-primary pull-right']);
                 ?>
             </div>
             <?php
