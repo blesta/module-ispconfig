@@ -175,7 +175,7 @@ class Ispconfig extends Module
             $fields->fieldSelect(
                 'meta[package]',
                 $packages,
-                $this->Html->ifSet($vars->meta['package']),
+                (isset($vars->meta['package']) ? $vars->meta['package'] : null),
                 ['id' => 'ispconfig_package']
             )
         );
@@ -194,7 +194,7 @@ class Ispconfig extends Module
                     $fields->fieldCheckbox(
                         'meta[php_options][' . $key . ']',
                         $key,
-                        $this->Html->ifSet($vars->meta['php_options'][$key]),
+                        (isset($vars->meta['php_options'][$key]) ? $vars->meta['php_options'][$key] : null),
                         ['class' => 'ispconfig_option'],
                         $fields->label($value, 'meta[php_options][' . $key . ']', ['class' => 'ispconfig_option_label'])
                     )
@@ -217,7 +217,7 @@ class Ispconfig extends Module
                     $fields->fieldCheckbox(
                         'meta[ssh_options][' . $key . ']',
                         $key,
-                        $this->Html->ifSet($vars->meta['ssh_options'][$key]),
+                        (isset($vars->meta['ssh_options'][$key]) ? $vars->meta['ssh_options'][$key] : null),
                         ['class' => 'ispconfig_option'],
                         $fields->label($value, 'meta[ssh_options][' . $key . ']', ['class' => 'ispconfig_option_label'])
                     )
@@ -501,7 +501,7 @@ class Ispconfig extends Module
         $domain->attach(
             $fields->fieldText(
                 'ispconfig_domain',
-                $this->Html->ifSet($vars->ispconfig_domain),
+                (isset($vars->ispconfig_domain) ? $vars->ispconfig_domain : null),
                 ['id' => 'ispconfig_domain']
             )
         );
@@ -514,7 +514,7 @@ class Ispconfig extends Module
         $username->attach(
             $fields->fieldText(
                 'ispconfig_username',
-                $this->Html->ifSet($vars->ispconfig_username),
+                (isset($vars->ispconfig_username) ? $vars->ispconfig_username : null),
                 ['id' => 'ispconfig_username']
             )
         );
@@ -530,7 +530,7 @@ class Ispconfig extends Module
         $password->attach(
             $fields->fieldPassword(
                 'ispconfig_password',
-                ['id' => 'ispconfig_password', 'value' => $this->Html->ifSet($vars->ispconfig_password)]
+                ['id' => 'ispconfig_password', 'value' => (isset($vars->ispconfig_password) ? $vars->ispconfig_password : null)]
             )
         );
         // Add tooltip
@@ -595,7 +595,7 @@ class Ispconfig extends Module
         $domain->attach(
             $fields->fieldText(
                 'ispconfig_domain',
-                $this->Html->ifSet($vars->ispconfig_domain),
+                (isset($vars->ispconfig_domain) ? $vars->ispconfig_domain : null),
                 ['id' => 'ispconfig_domain']
             )
         );
@@ -608,7 +608,7 @@ class Ispconfig extends Module
         $username->attach(
             $fields->fieldText(
                 'ispconfig_username',
-                $this->Html->ifSet($vars->ispconfig_username),
+                (isset($vars->ispconfig_username) ? $vars->ispconfig_username : null),
                 ['id' => 'ispconfig_username']
             )
         );
@@ -621,7 +621,7 @@ class Ispconfig extends Module
         $password->attach(
             $fields->fieldPassword(
                 'ispconfig_password',
-                ['id' => 'ispconfig_password', 'value' => $this->Html->ifSet($vars->ispconfig_password)]
+                ['id' => 'ispconfig_password', 'value' => (isset($vars->ispconfig_password) ? $vars->ispconfig_password : null)]
             )
         );
         // Set the label as a field
@@ -1255,7 +1255,7 @@ class Ispconfig extends Module
         if (!empty($post)) {
             Loader::loadModels($this, ['Services']);
             $data = array_merge((array) $service_fields, [
-                'ispconfig_password' => $this->Html->ifSet($post['ispconfig_password'])
+                'ispconfig_password' => (isset($post['ispconfig_password']) ? $post['ispconfig_password'] : null)
             ]);
 
             $this->Services->edit($service->id, $data);
