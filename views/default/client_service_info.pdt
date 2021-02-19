@@ -12,9 +12,9 @@
             <tbody>
                 <tr>
                     <td></td>
-                    <td><?php $this->Html->_($service_fields->ispconfig_username); ?></td>
-                    <td><?php $this->Html->_($service_fields->ispconfig_password); ?></td>
-                    <td><?php $this->Html->_($module_row->meta->host_name); ?></td>
+                    <td><?php (echo isset($service_fields->ispconfig_username) ? $this->Html->safe($service_fields->ispconfig_username) : null); ?></td>
+                    <td><?php (echo isset($service_fields->ispconfig_password) ? $this->Html->safe($service_fields->ispconfig_password) : null); ?></td>
+                    <td><?php (echo isset($module_row->meta->host_name) ? $this->Html->safe($module_row->meta->host_name) : null); ?></td>
                     <td>
                         <?php
                             $this->Form->create($this->Html->safe('https://' . (isset($module_row->meta->host_name) ? $module_row->meta->host_name : null) . ':' . (isset($module_row->meta->port) ? $module_row->meta->port : null) . '/login/'), ['target' => '_blank']);
@@ -23,7 +23,7 @@
                             $this->Form->fieldHidden('s_mod', 'login');
                             $this->Form->fieldHidden('s_pg', 'index');
                         ?>
-                        <a id="ispconfig_login<?php $this->Html->_($service->id); ?>" href="#"><?php $this->_('Ispconfig.service_info.option_login'); ?></a>
+                        <a id="ispconfig_login<?php (echo isset($service->id) ? $this->Html->safe($service->id) : null); ?>" href="#"><?php $this->_('Ispconfig.service_info.option_login'); ?></a>
                         <?php
                             $this->Form->end();
                         ?>
@@ -34,7 +34,7 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#ispconfig_login<?php $this->Html->_($service->id); ?>').click(function(e) {
+            $('#ispconfig_login<?php (echo isset($service->id) ? $this->Html->safe($service->id) : null); ?>').click(function(e) {
                 e.preventDefault();
 
                 $(this).closest('form').submit();
