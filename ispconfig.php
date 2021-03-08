@@ -562,7 +562,7 @@ class Ispconfig extends Module
         $domain->attach(
             $fields->fieldText(
                 'ispconfig_domain',
-                $this->Html->ifSet($vars->ispconfig_domain, $this->Html->ifSet($vars->domain)),
+                (isset($vars->ispconfig_domain) ? $vars->ispconfig_domain : ($vars->domain ?? null)),
                 ['id' => 'ispconfig_domain']
             )
         );
