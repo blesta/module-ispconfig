@@ -587,8 +587,7 @@ class Ispconfig extends Module
         $fields = new ModuleFields();
 
         // The module does not currently support updating the username or domain though it should.  For now these
-        // fields should be commented out
-        /*
+        // fields should be readonly
         // Create domain label
         $domain = $fields->label(Language::_('Ispconfig.service_field.domain', true), 'ispconfig_domain');
         // Create domain field and attach to domain label
@@ -596,7 +595,7 @@ class Ispconfig extends Module
             $fields->fieldText(
                 'ispconfig_domain',
                 (isset($vars->ispconfig_domain) ? $vars->ispconfig_domain : null),
-                ['id' => 'ispconfig_domain']
+                ['id' => 'ispconfig_domain', 'readonly' => 'readonly']
             )
         );
         // Set the label as a field
@@ -609,11 +608,11 @@ class Ispconfig extends Module
             $fields->fieldText(
                 'ispconfig_username',
                 (isset($vars->ispconfig_username) ? $vars->ispconfig_username : null),
-                ['id' => 'ispconfig_username']
+                ['id' => 'ispconfig_username', 'readonly' => 'readonly']
             )
         );
         // Set the label as a field
-        $fields->setField($username);*/
+        $fields->setField($username);
 
         // Create password label
         $password = $fields->label(Language::_('Ispconfig.service_field.password', true), 'ispconfig_password');
