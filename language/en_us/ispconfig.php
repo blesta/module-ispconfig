@@ -12,6 +12,8 @@ $lang['Ispconfig.tab_stats'] = 'Statistics';
 $lang['Ispconfig.tab_client_stats'] = 'Statistics';
 $lang['Ispconfig.tab_client_actions'] = 'Actions';
 
+$lang['Ispconfig.back_to_manage'] = 'Back';
+
 // Module management
 $lang['Ispconfig.add_module_row'] = 'Add Server';
 $lang['Ispconfig.add_module_group'] = 'Add Server Group';
