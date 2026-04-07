@@ -119,23 +119,29 @@ class Ispconfig extends Module
         $fields = new ModuleFields();
         $fields->setHtml("
 			<script type=\"text/javascript\">
-				$(document).ready(function() {
-					// Set whether to show or hide the php and ssh options
-					if ($('#ispconfig_package').val() !== '0') {
-                            $('.ispconfig_option').hide();
-                            $('.ispconfig_option_label').hide();
-                    }
+				(function() {
+					function toggleIspconfigOptions(show) {
+						var options = document.querySelectorAll('.ispconfig_option, .ispconfig_option_label');
+						for (var i = 0; i < options.length; i++) {
+							options[i].style.display = show ? '' : 'none';
+						}
+					}
 
-					$('#ispconfig_package').change(function() {
-						if ($(this).val() === '0') {
-                            $('.ispconfig_option').show();
-                            $('.ispconfig_option_label').show();
-						} else {
-                            $('.ispconfig_option').hide();
-                            $('.ispconfig_option_label').hide();
-                        }
+					document.addEventListener('DOMContentLoaded', function() {
+						var packageSelect = document.getElementById('ispconfig_package');
+
+						// Set whether to show or hide the php and ssh options
+						if (packageSelect && packageSelect.value !== '0') {
+							toggleIspconfigOptions(false);
+						}
+
+						if (packageSelect) {
+							packageSelect.addEventListener('change', function() {
+								toggleIspconfigOptions(this.value === '0');
+							});
+						}
 					});
-				});
+				})();
 			</script>
 		");
 
@@ -1246,6 +1252,7 @@ class Ispconfig extends Module
         );
         $stats->account_info = $this->parseResponse($api->getClient($client_id));
 
+
         return $stats;
     }
 
@@ -1409,14 +1416,20 @@ class Ispconfig extends Module
         try {
             $api = $this->getApi($hostname, $username, $password, $use_ssl, $port);
 
+            $this->log($hostname . '|login', serialize(['username' => $username, 'password' => '***']), 'input', true);
+
             $count = $this->getAccountCount($api);
-            if ($count !== false) {
+            $success = $count !== false;
+
+            $this->log($hostname, serialize(['account_count' => $success ? $count : null]), 'output', $success);
+
+            if ($success) {
                 $account_count = $count;
 
                 return true;
             }
         } catch (\Throwable $e) {
-            // Trap any errors encountered, could not validate connection
+            $this->log($hostname, $e->getMessage(), 'output', false);
         }
 
         return false;
@@ -1517,8 +1530,8 @@ class Ispconfig extends Module
             'state' => $vars['ispconfig_state'] ?? null,
             'country' => $vars['ispconfig_country'] ?? null,
             'template_master' => $package->meta->package,
-            'web_php_options' => implode(',', $package->meta->php_options),
-            'ssh_chroot' => implode(',', $package->meta->ssh_options)
+            'web_php_options' => implode(',', $package->meta->php_options ?? []),
+            'ssh_chroot' => implode(',', $package->meta->ssh_options ?? [])
         ];
 
         return $fields;

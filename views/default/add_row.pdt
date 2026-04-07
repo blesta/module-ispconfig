@@ -9,9 +9,9 @@ $this->Widget->setLinkButtons([
         'attributes' => ['href' => $this->base_uri . 'settings/company/modules/manage/' . $module->id],
     ],
 ]);
-$this->Widget->create($this->_('Ispconfig.add_row.box_title', true));
-
 $this->Form->create(null, ['class' => 'disable-on-submit']);
+
+$this->Widget->create($this->_('Ispconfig.add_row.box_title', true));
 $this->Form->fieldHidden('account_count', $vars->account_count ?? 0);
 ?>
 
@@ -91,17 +91,12 @@ $this->Form->fieldHidden('account_count', $vars->account_count ?? 0);
 
 <h6 class="form-section-header mt-4"><?php $this->_('Ispconfig.add_row.name_servers_title'); ?></h6>
 <div class="mb-3">
-    <div class="d-flex justify-content-end mb-2">
-        <a class="btn btn-outline-secondary btn-sm ns_row_add" href="#"><i class="bi bi-plus-lg"></i> <span><?php $this->_(
-            'Ispconfig.add_row.name_server_btn',
-        ); ?></span></a>
-    </div>
     <table class="table table-striped">
         <thead>
             <tr>
                 <th><?php $this->_('Ispconfig.add_row.name_server_col'); ?></th>
                 <th><?php $this->_('Ispconfig.add_row.name_server_host_col'); ?></th>
-                <th></th>
+                <th style="width: 50px;"></th>
             </tr>
         </thead>
         <tbody>
@@ -113,15 +108,20 @@ $this->Form->fieldHidden('account_count', $vars->account_count ?? 0);
                 <td><?php $this->Form->fieldText('name_servers[]', $vars->name_servers[$i] ?? null, [
                     'class' => 'form-control',
                 ]); ?></td>
-                <td><a href="#" class="manage ns_row_remove"><?php $this->_(
-                    'Ispconfig.add_row.remove_name_server',
-                ); ?></a></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-outline-danger ns_row_remove" title="<?php $this->_('Ispconfig.add_row.remove_name_server'); ?>">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
             </tr>
             <?php }
             ?>
         </tbody>
     </table>
 </div>
+<a class="btn btn-outline-success btn-sm ns_row_add" href="#"><i class="bi bi-plus-lg"></i> <span><?php $this->_(
+    'Ispconfig.add_row.name_server_btn',
+); ?></span></a>
 
 <h6 class="form-section-header mt-4"><?php $this->_('Ispconfig.add_row.notes_title'); ?></h6>
 <div class="mb-3">
@@ -136,14 +136,15 @@ $this->Form->fieldHidden('account_count', $vars->account_count ?? 0);
 </div>
 
 <?php
-$this->Form->end();
 $this->Widget->end();
+$this->Form->end();
 ?>
 
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
         // Add a row
-        document.querySelector('.ns_row_add').addEventListener('click', function() {
+        document.querySelector('.ns_row_add').addEventListener('click', function(e) {
+            e.preventDefault();
             var fields = document.querySelector('tr.ns_row').cloneNode(true);
             fields.querySelectorAll('input').forEach(function(el) {
                 el.value = '';
@@ -151,14 +152,14 @@ $this->Widget->end();
             fields.querySelector('td:first-child span').textContent = document.querySelectorAll('tr.ns_row').length + 1;
             var ns_rows = document.querySelectorAll('tr.ns_row');
             ns_rows[ns_rows.length - 1].insertAdjacentElement('afterend', fields);
-            return false;
         });
 
-        // Remove a row - using event delegation
-        document.addEventListener('click', function(e) {
-            if (e.target && e.target.classList.contains('ns_row_remove')) {
+        // Remove a row - event delegation for dynamic rows
+        document.querySelector('table tbody').addEventListener('click', function(e) {
+            var removeBtn = e.target.closest('.ns_row_remove');
+            if (removeBtn) {
                 if (document.querySelectorAll('tr.ns_row').length > 1) {
-                    e.target.closest('tr').remove();
+                    removeBtn.closest('tr').remove();
                     // Reorder the counts for these rows
                     var i = 1;
                     document.querySelectorAll('tr.ns_row').forEach(function(row) {
@@ -166,7 +167,6 @@ $this->Widget->end();
                     });
                 }
                 e.preventDefault();
-                return false;
             }
         });
     });
