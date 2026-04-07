@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ISPConfig API.
  *
@@ -291,7 +292,7 @@ class IspconfigApi
     {
         $user = $this->apiRequest('client_get_by_username', [$client_username]);
 
-        return isset($user['client_id']) ? $user['client_id'] : 0;
+        return $user['client_id'] ?? 0;
     }
 
     /**
@@ -338,7 +339,8 @@ class IspconfigApi
         $templates_list = ['0' => 'Custom'];
 
         foreach ($client_templates as $template) {
-            if ($type == 'main' && $template['template_type'] == 'm'
+            if (
+                $type == 'main' && $template['template_type'] == 'm'
                 || $type == 'addon' && $template['template_type'] == 'a'
                 || $type == 'all'
             ) {
@@ -358,7 +360,7 @@ class IspconfigApi
     {
         $default_server = $this->apiRequest('server_get_all');
         $server = $this->apiRequest('server_get_serverid_by_ip', [gethostbyname($this->hostname)]);
-        $server_id = isset($server[0]['server_id']) ? $server[0]['server_id'] : $default_server[0]['server_id'];
+        $server_id = $server[0]['server_id'] ?? $default_server[0]['server_id'];
 
         return $server_id;
     }

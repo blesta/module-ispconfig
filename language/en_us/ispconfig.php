@@ -12,11 +12,15 @@ $lang['Ispconfig.tab_stats'] = 'Statistics';
 $lang['Ispconfig.tab_client_stats'] = 'Statistics';
 $lang['Ispconfig.tab_client_actions'] = 'Actions';
 
+$lang['Ispconfig.back_to_manage'] = 'Back';
+
 // Module management
 $lang['Ispconfig.add_module_row'] = 'Add Server';
 $lang['Ispconfig.add_module_group'] = 'Add Server Group';
 $lang['Ispconfig.manage.module_rows_title'] = 'Servers';
 $lang['Ispconfig.manage.module_groups_title'] = 'Server Groups';
+$lang['Ispconfig.manage.tab_rows'] = 'Servers';
+$lang['Ispconfig.manage.tab_groups'] = 'Server Groups';
 $lang['Ispconfig.manage.module_rows_heading.name'] = 'Server Label';
 $lang['Ispconfig.manage.module_rows_heading.hostname'] = 'Hostname';
 $lang['Ispconfig.manage.module_rows_heading.accounts'] = 'Accounts';

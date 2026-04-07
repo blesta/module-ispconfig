@@ -1,5 +1,7 @@
 <?php
+
 use Blesta\Core\Util\Validate\Server;
+
 /**
  * Ispconfig Module.
  *
@@ -117,23 +119,29 @@ class Ispconfig extends Module
         $fields = new ModuleFields();
         $fields->setHtml("
 			<script type=\"text/javascript\">
-				$(document).ready(function() {
-					// Set whether to show or hide the php and ssh options
-					if ($('#ispconfig_package').val() !== '0') {
-                            $('.ispconfig_option').hide();
-                            $('.ispconfig_option_label').hide();
-                    }
+				(function() {
+					function toggleIspconfigOptions(show) {
+						var options = document.querySelectorAll('.ispconfig_option, .ispconfig_option_label');
+						for (var i = 0; i < options.length; i++) {
+							options[i].style.display = show ? '' : 'none';
+						}
+					}
 
-					$('#ispconfig_package').change(function() {
-						if ($(this).val() === '0') {
-                            $('.ispconfig_option').show();
-                            $('.ispconfig_option_label').show();
-						} else {
-                            $('.ispconfig_option').hide();
-                            $('.ispconfig_option_label').hide();
-                        }
+					document.addEventListener('DOMContentLoaded', function() {
+						var packageSelect = document.getElementById('ispconfig_package');
+
+						// Set whether to show or hide the php and ssh options
+						if (packageSelect && packageSelect.value !== '0') {
+							toggleIspconfigOptions(false);
+						}
+
+						if (packageSelect) {
+							packageSelect.addEventListener('change', function() {
+								toggleIspconfigOptions(this.value === '0');
+							});
+						}
 					});
-				});
+				})();
 			</script>
 		");
 
@@ -175,7 +183,7 @@ class Ispconfig extends Module
             $fields->fieldSelect(
                 'meta[package]',
                 $packages,
-                (isset($vars->meta['package']) ? $vars->meta['package'] : null),
+                ($vars->meta['package'] ?? null),
                 ['id' => 'ispconfig_package']
             )
         );
@@ -194,7 +202,7 @@ class Ispconfig extends Module
                     $fields->fieldCheckbox(
                         'meta[php_options][' . $key . ']',
                         $key,
-                        (isset($vars->meta['php_options'][$key]) ? $vars->meta['php_options'][$key] : null),
+                        ($vars->meta['php_options'][$key] ?? null),
                         ['class' => 'ispconfig_option'],
                         $fields->label($value, 'meta[php_options][' . $key . ']', ['class' => 'ispconfig_option_label'])
                     )
@@ -217,7 +225,7 @@ class Ispconfig extends Module
                     $fields->fieldCheckbox(
                         'meta[ssh_options][' . $key . ']',
                         $key,
-                        (isset($vars->meta['ssh_options'][$key]) ? $vars->meta['ssh_options'][$key] : null),
+                        ($vars->meta['ssh_options'][$key] ?? null),
                         ['class' => 'ispconfig_option'],
                         $fields->label($value, 'meta[ssh_options][' . $key . ']', ['class' => 'ispconfig_option_label'])
                     )
@@ -348,6 +356,14 @@ class Ispconfig extends Module
             }
         }
 
+        // Fetch module
+        Loader::loadModels($this, ['ModuleManager']);
+        $module = $this->ModuleManager->getByClass(
+            \Illuminate\Support\Str::snake(get_class($this)),
+            Configure::get('Blesta.company_id')
+        );
+        $module = ($module[0] ?? []);
+        $this->view->set('module', (object) $module);
         $this->view->set('vars', (object) $vars);
 
         return $this->view->fetch();
@@ -380,6 +396,14 @@ class Ispconfig extends Module
             }
         }
 
+        // Fetch module
+        Loader::loadModels($this, ['ModuleManager']);
+        $module = $this->ModuleManager->getByClass(
+            \Illuminate\Support\Str::snake(get_class($this)),
+            Configure::get('Blesta.company_id')
+        );
+        $module = ($module[0] ?? []);
+        $this->view->set('module', (object) $module);
         $this->view->set('vars', (object) $vars);
 
         return $this->view->fetch();
@@ -501,7 +525,7 @@ class Ispconfig extends Module
         $domain->attach(
             $fields->fieldText(
                 'ispconfig_domain',
-                (isset($vars->ispconfig_domain) ? $vars->ispconfig_domain : null),
+                ($vars->ispconfig_domain ?? null),
                 ['id' => 'ispconfig_domain']
             )
         );
@@ -514,7 +538,7 @@ class Ispconfig extends Module
         $username->attach(
             $fields->fieldText(
                 'ispconfig_username',
-                (isset($vars->ispconfig_username) ? $vars->ispconfig_username : null),
+                ($vars->ispconfig_username ?? null),
                 ['id' => 'ispconfig_username']
             )
         );
@@ -530,7 +554,7 @@ class Ispconfig extends Module
         $password->attach(
             $fields->fieldPassword(
                 'ispconfig_password',
-                ['id' => 'ispconfig_password', 'value' => (isset($vars->ispconfig_password) ? $vars->ispconfig_password : null)]
+                ['id' => 'ispconfig_password', 'value' => ($vars->ispconfig_password ?? null)]
             )
         );
         // Add tooltip
@@ -562,7 +586,7 @@ class Ispconfig extends Module
         $domain->attach(
             $fields->fieldText(
                 'ispconfig_domain',
-                (isset($vars->ispconfig_domain) ? $vars->ispconfig_domain : ($vars->domain ?? null)),
+                ($vars->ispconfig_domain ?? ($vars->domain ?? null)),
                 ['id' => 'ispconfig_domain']
             )
         );
@@ -621,7 +645,7 @@ class Ispconfig extends Module
         $password->attach(
             $fields->fieldPassword(
                 'ispconfig_password',
-                ['id' => 'ispconfig_password', 'value' => (isset($vars->ispconfig_password) ? $vars->ispconfig_password : null)]
+                ['id' => 'ispconfig_password', 'value' => ($vars->ispconfig_password ?? null)]
             )
         );
         // Set the label as a field
@@ -1228,6 +1252,7 @@ class Ispconfig extends Module
         );
         $stats->account_info = $this->parseResponse($api->getClient($client_id));
 
+
         return $stats;
     }
 
@@ -1255,7 +1280,7 @@ class Ispconfig extends Module
         if (!empty($post)) {
             Loader::loadModels($this, ['Services']);
             $data = array_merge((array) $service_fields, [
-                'ispconfig_password' => (isset($post['ispconfig_password']) ? $post['ispconfig_password'] : null)
+                'ispconfig_password' => ($post['ispconfig_password'] ?? null)
             ]);
 
             $this->Services->edit($service->id, $data);
@@ -1269,7 +1294,7 @@ class Ispconfig extends Module
 
         $this->view->set('service_fields', $service_fields);
         $this->view->set('service_id', $service->id);
-        $this->view->set('vars', (isset($vars) ? $vars : new stdClass()));
+        $this->view->set('vars', ($vars ?? new stdClass()));
 
         $this->view->setDefaultView('components' . DS . 'modules' . DS . 'ispconfig' . DS);
 
@@ -1338,7 +1363,7 @@ class Ispconfig extends Module
             if (is_array($output)) {
                 $accounts = count($output);
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // Nothing to do
         }
 
@@ -1391,14 +1416,20 @@ class Ispconfig extends Module
         try {
             $api = $this->getApi($hostname, $username, $password, $use_ssl, $port);
 
+            $this->log($hostname . '|login', serialize(['username' => $username, 'password' => '***']), 'input', true);
+
             $count = $this->getAccountCount($api);
-            if ($count !== false) {
+            $success = $count !== false;
+
+            $this->log($hostname, serialize(['account_count' => $success ? $count : null]), 'output', $success);
+
+            if ($success) {
                 $account_count = $count;
 
                 return true;
             }
-        } catch (Exception $e) {
-            // Trap any errors encountered, could not validate connection
+        } catch (\Throwable $e) {
+            $this->log($hostname, $e->getMessage(), 'output', false);
         }
 
         return false;
@@ -1488,19 +1519,19 @@ class Ispconfig extends Module
     private function getFieldsFromInput(array $vars, $package)
     {
         $fields = [
-            'contact_name' => isset($vars['ispconfig_name']) ? $vars['ispconfig_name'] : null,
-            'username' => isset($vars['ispconfig_username']) ? $vars['ispconfig_username'] : null,
-            'password' => isset($vars['ispconfig_password']) ? $vars['ispconfig_password'] : null,
-            'email' => isset($vars['ispconfig_email']) ? $vars['ispconfig_email'] : null,
-            'company_name' => isset($vars['ispconfig_company']) ? $vars['ispconfig_company'] : null,
-            'street' => isset($vars['ispconfig_address']) ? $vars['ispconfig_address'] : null,
-            'city' => isset($vars['ispconfig_city']) ? $vars['ispconfig_city'] : null,
-            'zip' => isset($vars['ispconfig_zip']) ? $vars['ispconfig_zip'] : null,
-            'state' => isset($vars['ispconfig_state']) ? $vars['ispconfig_state'] : null,
-            'country' => isset($vars['ispconfig_country']) ? $vars['ispconfig_country'] : null,
+            'contact_name' => $vars['ispconfig_name'] ?? null,
+            'username' => $vars['ispconfig_username'] ?? null,
+            'password' => $vars['ispconfig_password'] ?? null,
+            'email' => $vars['ispconfig_email'] ?? null,
+            'company_name' => $vars['ispconfig_company'] ?? null,
+            'street' => $vars['ispconfig_address'] ?? null,
+            'city' => $vars['ispconfig_city'] ?? null,
+            'zip' => $vars['ispconfig_zip'] ?? null,
+            'state' => $vars['ispconfig_state'] ?? null,
+            'country' => $vars['ispconfig_country'] ?? null,
             'template_master' => $package->meta->package,
-            'web_php_options' => implode(',', $package->meta->php_options),
-            'ssh_chroot' => implode(',', $package->meta->ssh_options)
+            'web_php_options' => implode(',', $package->meta->php_options ?? []),
+            'ssh_chroot' => implode(',', $package->meta->ssh_options ?? [])
         ];
 
         return $fields;
@@ -1592,7 +1623,7 @@ class Ispconfig extends Module
             }
 
             $this->log($module_row->meta->host_name, serialize($packages), 'output', $success);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // API request failed
         }
 
@@ -1627,7 +1658,7 @@ class Ispconfig extends Module
             }
 
             $this->log($module_row->meta->host_name, serialize($options), 'output', $success);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // API request failed
         }
 
@@ -1662,7 +1693,7 @@ class Ispconfig extends Module
             }
 
             $this->log($module_row->meta->host_name, serialize($options), 'output', $success);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             // API request failed
         }
 

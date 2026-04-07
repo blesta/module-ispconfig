@@ -1,5 +1,5 @@
 {
-    "version": "1.9.0",
+    "version": "2.0.0",
     "name": "Ispconfig.name",
     "description": "Ispconfig.description",
     "authors": [
@@ -21,8 +21,18 @@
         "group": "Ispconfig.module_group"
     },
     "email_tags": {
-        "module": ["host_name", "name_servers"],
-        "package": ["package"],
-        "service": ["ispconfig_domain", "ispconfig_username", "ispconfig_password"]
-    }
+        "module": [
+            "host_name",
+            "name_servers"
+        ],
+        "package": [
+            "package"
+        ],
+        "service": [
+            "ispconfig_domain",
+            "ispconfig_username",
+            "ispconfig_password"
+        ]
+    },
+    "icon": "bi-server"
 }
