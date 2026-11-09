@@ -147,7 +147,7 @@ class Ispconfig extends Module
 
         // Fetch all packages available for the given server or server group
         $module_row = null;
-        if (isset($vars->module_group) && $vars->module_group == '' || $vars->module_group == 'select') {
+        if ((isset($vars->module_group) && $vars->module_group == '') || ($vars->module_group ?? null) == 'select') {
             if (isset($vars->module_row) && $vars->module_row > 0) {
                 $module_row = $this->getModuleRow($vars->module_row);
             } else {
@@ -159,7 +159,7 @@ class Ispconfig extends Module
             }
         } else {
             // Fetch the 1st server from the list of servers in the selected group
-            $rows = $this->getModuleRows($vars->module_group);
+            $rows = $this->getModuleRows($vars->module_group ?? null);
 
             if (isset($rows[0])) {
                 $module_row = $rows[0];
@@ -722,6 +722,9 @@ class Ispconfig extends Module
         $empty_values = ['ispconfig_username', 'ispconfig_password'];
 
         if ($edit) {
+            // The domain cannot be changed when editing, so only validate it if it was submitted
+            $rules['ispconfig_domain']['format']['if_set'] = true;
+
             // If this is an edit and no password given then don't evaluate password
             // since it won't be updated
             if (!array_key_exists('ispconfig_password', $vars) || $vars['ispconfig_password'] == '') {
@@ -901,8 +904,10 @@ class Ispconfig extends Module
             return;
         }
 
-        // Force domain to lower case
-        $vars['ispconfig_domain'] = strtolower($vars['ispconfig_domain']);
+        // Force domain to lower case, if one was submitted
+        if (isset($vars['ispconfig_domain'])) {
+            $vars['ispconfig_domain'] = strtolower($vars['ispconfig_domain']);
+        }
 
         $service_fields = $this->serviceFieldsToObject($service->fields);
 
@@ -912,7 +917,7 @@ class Ispconfig extends Module
         }
 
         // Only update the service if 'use_module' is true
-        if ($vars['use_module'] == 'true') {
+        if (($vars['use_module'] ?? 'false') == 'true') {
             // Check for fields that changed
             $delta = [];
             foreach ($vars as $key => $value) {
@@ -1212,7 +1217,7 @@ class Ispconfig extends Module
         $stats = $this->getStats($package, $service);
 
         $this->view->set('stats', $stats);
-        $this->view->set('user_type', $package->meta->type);
+        $this->view->set('user_type', $package->meta->type ?? null);
 
         $this->view->setDefaultView('components' . DS . 'modules' . DS . 'ispconfig' . DS);
 
