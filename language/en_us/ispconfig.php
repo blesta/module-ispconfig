@@ -143,7 +143,7 @@ $lang['Ispconfig.!error.meta[package].empty'] = 'A ISPConfig Package is required
 $lang['Ispconfig.!error.api.internal'] = 'An internal error occurred, or the server did not respond to the request.';
 $lang['Ispconfig.!error.module_row.missing'] = 'An internal error occurred. The module row is unavailable.';
 $lang['Ispconfig.!error.api.client_not_found'] = 'The ISPConfig client "%1$s" could not be found.';
-$lang['Ispconfig.!error.api.shared_client'] = 'The ISPConfig client "%1$s" owns %2$s websites, so changing its limits template would affect all of them. Change the limits in ISPConfig instead, or change the package without using the module.';
+$lang['Ispconfig.!error.api.shared_client'] = 'The ISPConfig client "%1$s" is used by another service, so changing its limits template would affect both. Change the limits in ISPConfig instead, or change the package without using the module.';
 
 $lang['Ispconfig.!error.ispconfig_domain.format'] = 'Please enter a valid domain name, e.g. domain.com.';
 $lang['Ispconfig.!error.ispconfig_domain.test'] = "Domain name can not start with 'test'.";

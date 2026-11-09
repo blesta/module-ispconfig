@@ -296,34 +296,6 @@ class IspconfigApi
     }
 
     /**
-     * Counts the websites (vhosts) owned by a client.
-     *
-     * @param int $client_id The client id
-     * @return mixed The number of websites, or false if it could not be determined
-     */
-    public function getClientSiteCount($client_id)
-    {
-        $group_id = $this->apiRequest('client_get_groupid', [$client_id]);
-        if (!is_numeric($group_id) || (int) $group_id <= 0) {
-            return false;
-        }
-
-        $sites = $this->apiRequest('sites_web_domain_get', [['sys_groupid' => (int) $group_id]]);
-        if (!is_array($sites) || isset($sites['error'])) {
-            return false;
-        }
-
-        $count = 0;
-        foreach ($sites as $site) {
-            if (is_array($site) && ($site['type'] ?? null) === 'vhost') {
-                $count++;
-            }
-        }
-
-        return $count;
-    }
-
-    /**
      * Get all the available PHP options.
      *
      * @return array An array containing the available PHP options

@@ -1097,15 +1097,13 @@ class Ispconfig extends Module
                     return;
                 }
 
-                // The limits template applies to the whole ISPConfig client, so only change it
-                // when this client owns no more than one website
-                $site_count = $api->getClientSiteCount($client_id);
-                if ($site_count === false || $site_count > 1) {
+                // The limits template applies to the whole ISPConfig client, so don't change it
+                // when another service uses the same client
+                if ($this->isSharedClient($service, $service_fields->ispconfig_username)) {
                     $this->Input->setErrors(['api' => ['shared_client' => Language::_(
                         'Ispconfig.!error.api.shared_client',
                         true,
-                        $service_fields->ispconfig_username,
-                        $site_count === false ? '?' : $site_count
+                        $service_fields->ispconfig_username
                     )]]);
 
                     return;
@@ -1454,6 +1452,31 @@ class Ispconfig extends Module
             }
         } catch (\Throwable $e) {
             $this->log($hostname, $e->getMessage(), 'output', false);
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines whether another service uses the same ISPConfig client
+     *
+     * @param stdClass $service The service being changed
+     * @param string $username The ISPConfig client username
+     * @return bool True if another service uses the client, false otherwise
+     */
+    private function isSharedClient($service, $username)
+    {
+        Loader::loadModels($this, ['Services']);
+
+        $row = $this->getModuleRow();
+        $services = $this->Services->searchServiceFields($row->module_id, 'ispconfig_username', $username);
+        foreach ($services as $other_service) {
+            if ($other_service->id != $service->id
+                && $other_service->module_row_id == $service->module_row_id
+                && $other_service->status != 'canceled'
+            ) {
+                return true;
+            }
         }
 
         return false;
