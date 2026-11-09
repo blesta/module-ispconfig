@@ -1090,7 +1090,29 @@ class Ispconfig extends Module
                 $service_fields = $this->serviceFieldsToObject($service->fields);
 
                 // Get ISPConfig client ID
-                $client_id = $api->getClientIdByUsername($service_fields->ispconfig_username);
+                $client_id = $api->getClientIdByUsername($service_fields->ispconfig_username ?? '');
+
+                if (!$client_id) {
+                    $this->Input->setErrors(['api' => ['client' => Language::_(
+                        'Ispconfig.!error.api.client_not_found',
+                        true,
+                        $service_fields->ispconfig_username ?? ''
+                    )]]);
+
+                    return;
+                }
+
+                // The limits template applies to the whole ISPConfig client, so don't change it
+                // when another service uses the same client
+                if ($this->isSharedClient($service, $service_fields->ispconfig_username)) {
+                    $this->Input->setErrors(['api' => ['shared_client' => Language::_(
+                        'Ispconfig.!error.api.shared_client',
+                        true,
+                        $service_fields->ispconfig_username
+                    )]]);
+
+                    return;
+                }
 
                 // Change service package
                 $this->log(
@@ -1435,6 +1457,31 @@ class Ispconfig extends Module
             }
         } catch (\Throwable $e) {
             $this->log($hostname, $e->getMessage(), 'output', false);
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines whether another service uses the same ISPConfig client
+     *
+     * @param stdClass $service The service being changed
+     * @param string $username The ISPConfig client username
+     * @return bool True if another service uses the client, false otherwise
+     */
+    private function isSharedClient($service, $username)
+    {
+        Loader::loadModels($this, ['Services']);
+
+        $row = $this->getModuleRow();
+        $services = $this->Services->searchServiceFields($row->module_id, 'ispconfig_username', $username);
+        foreach ($services as $other_service) {
+            if ($other_service->id != $service->id
+                && $other_service->module_row_id == $service->module_row_id
+                && $other_service->status != 'canceled'
+            ) {
+                return true;
+            }
         }
 
         return false;
